@@ -223,7 +223,7 @@
          *          progress of the user
          */
         function setSuccessSectionVisibility() {
-            if (!localStorage.getItem(secretPasswordFoundKey)) {
+            if (!localStorage.getItem(isPasswordGuessedKey)) {
                 document.getElementById("conclusion").style.display = "none";
                 document.getElementById("btn-next").style.display = "none";
                 return;
@@ -253,8 +253,6 @@
 
             validateResource();
             loadNextResource();
-
-            clearLocalStorage();
         });
 
     });

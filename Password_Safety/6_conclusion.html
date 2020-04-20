@@ -114,9 +114,7 @@
          * @summary Redirect the user when he is done with the module
          */
         function redirectToHubPage() {
-            // Redirect to base URL to avoid 404
-            // see: https://stackoverflow.com/questions/31415052/angular-2-0-router-not-working-on-reloading-the-browser
-            window.location.href = "http://193.50.40.81:4201/";
+            window.location.href = "http://193.50.40.81:4201/hubs/" + hubId;
         }
 
         // Event listener for the button to go to the next resource

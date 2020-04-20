@@ -312,6 +312,12 @@
                 return;
             }
 
+            // If the field is empty, skip the process
+            let userValue = document.getElementById("user-pwd").value;
+            if (!userValue) {
+                return;
+            }
+
             // Set a flag to signal that the operation is in progress
             localStorage.setItem(isPasswordGuessInProgressKey, true);
 
@@ -320,7 +326,6 @@
             document.getElementById("user-pwd").disabled = true;
 
             // Retrieve user data and normalize if needed
-            let userValue = document.getElementById("user-pwd").value;
             userValue = sanitize(userValue, forbiddenChars);
             document.getElementById("user-pwd").value = userValue;
 
