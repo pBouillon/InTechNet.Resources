@@ -10,16 +10,17 @@
     <div class="col-md-8 mx-auto">
 
         <p class="text-justify mt-3">
-            Comme on vient de le voir, <mark>un mot de passe simple se devine
+            Comme nous venons de le voir, <mark>un mot de passe (très) simple se devine
             en quelques minutes seulement</mark> par un autre être humain.
         </p>
 
         <p class="text-justify mt-3">
-            Le problème est que sur internet, c'est rarement les humains qui essaient
-            de trouver les mots de passe. Il existe de nombreux programmes mal
+            Le problème est que sur internet il existe de nombreux programmes mal
             intentionnés qui cherchent à trouver les mots de passe pour ensuite avoir
-            accès à tes données; et le soucis c'est que <mark>les ordinateurs sont
+            accès à tes données, et <mark>les ordinateurs sont
             bien plus rapides que nous</mark> quand il s'agit de calculer quelque chose.
+            C'est donc bien plus souvent des ordinateurs que des humains qui chercheront
+            à deviner ton mot de passe !
         </p>
 
         <p class="text-justify mt-3">
@@ -85,14 +86,14 @@
         </p>
 
         <p class="text-justify mt-3">
-            Pas mal non ? Tu as vu à quel point c'était plus rapide pour l'ordinateur
-            que pour nous ?
+            Pas mal non ? Tu as vu le nombre de chiffres que peut tester l'ordinateur
+            chaque seconde ?
         </p>
 
         <p class="text-justify mt-3">
             Ici le mot de passe est très simpliste et peu compliqué: il n'est composé que de trois
-            caractères et que de chiffres, c'est pourquoi on dit qu'<mark>il n'est pas robuste, parce qu'il
-            est facile à deviner par un humain, et encore plus par une machine</mark>.
+            chiffres et rien d'autre, c'est pourquoi on dit qu'<mark>il n'est pas robuste: parce qu'il
+            est facile à deviner par un humain et encore plus par une machine</mark>.
         </p>
 
     </div>
@@ -101,9 +102,10 @@
 <!-- /Conclusion -->
 
 <!-- Module button -->
-<div class="row my-5">
+<div class="row justify-content-md-start justify-content-center my-5">
 
-    <button id="btn-next" class="col-md-3 offset-md-7 btn btn-success">
+    <button id="btn-next"
+        class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
         Mais alors, comment faire ?
     </button>
 
@@ -119,6 +121,7 @@
         const isUpdateInProgressKey = "isUpdating";
         const isPasswordGuessedKey = "isGuessed";
 
+        // Initialize content when the page is loaded
         $(function () {
             localStorage.removeItem(isUpdateInProgressKey);
             setSuccessSectionVisibility();
@@ -128,10 +131,15 @@
         const lowerBound = 0;
         const upperBound = 999;
 
+        // Trigger the brute force algorithm
         $("#btn-pwd-check").click(() => {
             guessUserPassword();
         });
 
+        /**
+         * @summary trigger and display each steps of the brute force attempt
+         *          to find the user password
+         */
         async function guessUserPassword() {
             const holdDuration = 1;
 
@@ -162,6 +170,7 @@
                     break;
                 }
 
+                // Hold the program to allow the user to see value changes
                 await sleep(holdDuration);
             }
 
@@ -181,14 +190,24 @@
 
 
         // Next resource ---
+        
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
         const hubId = location.href.split("/")[4];
 
+        // Constants for API calls
         const apiUrl = "http://193.50.40.81:5000/api/v1";
         const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
         const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
 
+        // Retrieve the token from the local storage
         const token = JSON.parse(localStorage.currentPupil).token;
 
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
         function loadNextResource() {
             const xmlHttp = new XMLHttpRequest();
             xmlHttp.open("GET", nextResourceUrl, false);
@@ -199,17 +218,24 @@
             document.getElementById("resource-content").innerHTML = resource.content;
         }
 
+        /**
+         * @summary set the visibility of the conclusion section according to the
+         *          progress of the user
+         */
         function setSuccessSectionVisibility() {
-            if (!localStorage.getItem(isPasswordGuessedKey)) {
-                document.getElementById("conclusion").style.visibility = "hidden";
-                document.getElementById("btn-next").style.visibility = "hidden";
+            if (!localStorage.getItem(secretPasswordFoundKey)) {
+                document.getElementById("conclusion").style.display = "none";
+                document.getElementById("btn-next").style.display = "none";
                 return;
             }
 
-            document.getElementById("conclusion").style.visibility = "visible";
-            document.getElementById("btn-next").style.visibility = "visible";
+            document.getElementById("conclusion").style.display = "block";
+            document.getElementById("btn-next").style.display = "block";
         }
 
+        /**
+         * @summary validate the current resource
+         */ 
         function validateResource() {
             const xmlHttp = new XMLHttpRequest();
             xmlHttp.open("PUT", validateResourceUrl, false);
@@ -217,6 +243,7 @@
             xmlHttp.send(null);
         }
 
+        // Event listener for the button to go to the next resource
         $("#btn-next").click(() => {
             if (localStorage.getItem(isUpdateInProgressKey)) {
                 return;

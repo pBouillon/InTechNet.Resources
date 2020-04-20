@@ -10,24 +10,31 @@
     <div class="col-md-8 mx-auto mt-3">
 
         <p class="text-justify mt-3">
-            On a pu voir l'importance d'un mot de passe, qu'<mark>il protège ton
-            identité sur internet</mark>, mais comment s'assurer qu'il remplisse
-            bien son rôle ? Pour ça, il est essentiel que <mark>ton mot de passe 
-            reste secret</mark>.
+            On a pu voir l'importance d'un mot de passe, mais comment s'assurer qu'il remplisse
+            bien son rôle ? Pour ça, <mark>il est essentiel qu'il reste secret</mark>.
         </p>
 
         <p class="text-justify mt-3">
-            Pour faire un bon mot de passe, garde bien en tête ce que l'on a pu
-            voir précédemment: il faut qu'il soit <mark>plutôt long</mark>
-            (au moins 8 caractères), composé de <mark>plusieurs symboles
-            différents</mark> et que <mark>seul toi ne puisse le comprendre</mark>
-            (évite donc ton nom, prénom ou ta date de naissance !).
+            Pour faire un mot de passe robuste, garde bien en tête ce que l'on a pu
+            voir précédemment. Il faut qu'il soit:
         </p>
+
+        <ul class="list-unstyled mt-3">
+            <li class="pl-3 mb-1">
+                ✔️ <mark>Plutôt long</mark> (au moins 8 caractères)
+            </li>
+            <li class="pl-3 mb-1">
+                ✔️ Composé de <mark>plusieurs symboles différents</mark> (majuscules, minuscules, chiffres et ponctuation)
+            </li>
+            <li class="pl-3 mb-1">
+                ✔️ Que <mark>seul toi ne puisse le comprendre</mark> (évite donc ton nom, prénom ou ta date de naissance !)
+            </li>
+        </ul>
 
         <p class="text-justify mt-3">
             Pour plus de sécurité, essaie d'utiliser <mark>un mot de passe différent
-            sur chaque site</mark>; comme ça, si quelqu'un le devine à un endroit,
-            il n'aura pas accès aux autres.
+            sur chaque site</mark>; De cette manière, si quelqu'un le devine à un endroit il
+            ne sera pas capable de se connecter ailleurs en ton nom.
         </p>
 
     </div>
@@ -45,9 +52,8 @@
     <div class="col-md-8 mx-auto mt-3">
 
         <p class="text-justify mt-3">
-            Bravo de l'avoir fini en entier ! Essaie de garder en tête chacun des
-            petits points que l'on a pu voir pour utiliser tes comptes en toute
-            sécurité.
+            Bravo ! Essaie de garder en tête chacun des points que l'on a pu
+            voir pour utiliser tes comptes en toute sécurité !
         </p>
 
     </div>
@@ -56,9 +62,10 @@
 <!-- /Module ending -->
 
 <!-- Module button -->
-<div class="row my-5">
+<div class="row justify-content-md-start justify-content-center my-5">
 
-    <button id="btn-next" class="col-md-3 offset-md-7 btn btn-success">
+    <button id="btn-next"
+        class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
         Finir le module
     </button>
 
@@ -73,19 +80,29 @@
         // LocalStorage keys
         const isUpdateInProgressKey = "isUpdating";
 
+        // Initialize content when the page is loaded
         $(function () {
             localStorage.removeItem(isUpdateInProgressKey);
         });
         
         // End resource ---
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
         const hubId = location.href.split("/")[4];
 
+        // Constants for API calls
         const apiUrl = "http://193.50.40.81:5000/api/v1";
         const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
         const clearResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
 
+        // Retrieve the token from the local storage
         const token = JSON.parse(localStorage.currentPupil).token;
 
+        /**
+         * @summary Delete the current resource in the database
+         */
         function clearResource() {
             const xmlHttp = new XMLHttpRequest();
             xmlHttp.open("DELETE", clearResourceUrl, false);
@@ -93,10 +110,16 @@
             xmlHttp.send(null);
         }
 
+        /**
+         * @summary Redirect the user when he is done with the module
+         */
         function redirectToHubPage() {
-            window.location.href = "http://localhost:4201/hubs/" + hubId;
+            // Redirect to base URL to avoid 404
+            // see: https://stackoverflow.com/questions/31415052/angular-2-0-router-not-working-on-reloading-the-browser
+            window.location.href = "http://193.50.40.81:4201/";
         }
 
+        // Event listener for the button to go to the next resource
         $("#btn-next").click(() => {
             clearResource();
             redirectToHubPage();

@@ -20,15 +20,17 @@
         </p>
 
         <p class="text-justify mt-3">
-            Ici, l'ordinateur n'est pas très très fort et ne peut chercher que jusqu'à trois caractères, <mark>
-            fais très attention, ceux sur internet sont bien plus puissants !</mark> On va se servir de celui-ci
-            pour voir les écarts entre un mot de passe très très simple et un un peu plus complexe sur seulement
+            Ici, l'ordinateur n'est pas très fort et ne peut chercher que jusqu'à trois caractères, <mark>
+            fais attention, ceux sur internet sont bien plus puissants !</mark> On va se servir de celui-ci
+            pour voir les écarts entre un mot de passe très simple et un un peu plus complexe sur seulement
             quelques caractères.
         </p>
 
         <p class="text-justify mt-3">
-            Regardons la différence de robustesse de différents mots de passe (attention à n'utiliser que des lettres et
-            des chiffres). Tu peux bien sûr essayer toi même d'écrire ton mot de passe, sinon voici quelques idées:
+            Regardons la différences d'opération entre un mot de passe court et un mot de passe un peu plus long, mais
+            aussi entre un mot de passe fait uniquement de lettre minuscules puis en ajoutant progressivement
+            des majuscules et des chiffres. Tu peux bien sûr essayer toi même d'écrire tes exemples,
+            sinon voici quelques idées:
         </p>
 
         <ul class="list-unstyled mt-3">
@@ -60,7 +62,7 @@
             <input id="computer-pwd" type="text" class="form-control" disabled>
         </div>
 
-        <small id="computer-tries" class="form-text text-muted">Nombre d'essais: 0</small>
+        <small id="computer-tries" class="form-text text-muted mb-3">Nombre d'essais: 0</small>
 
     </div>
     <!-- /Computer password -->
@@ -92,8 +94,8 @@
 
         <p class="text-justify mt-3">
             Comme tu peux le voir, <mark>plus le mot de passe est long et plus il est
-            composé de différentes choses, plus il est difficile pour l'ordinateur
-            de le trouver</mark>; et pourtant tu peux voir à quel point il va vite !
+            composé de différents symboles, plus il est difficile pour l'ordinateur
+            de le trouver</mark> (et pourtant on a vu qu'il cherchait rapidement !)
         </p>
 
         <p class="text-justify mt-3">
@@ -107,9 +109,10 @@
 <!-- /Game conclusion -->
 
 <!-- Module button -->
-<div class="row my-5">
+<div class="row justify-content-md-start justify-content-center my-5">
 
-    <button id="btn-next" class="col-md-3 offset-md-7 btn btn-success">
+    <button id="btn-next"
+        class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
         En avant !
     </button>
 
@@ -126,6 +129,7 @@
         const isPasswordGuessedKey = "isGuessed";
         const isPasswordGuessInProgressKey = "isGuessing";
 
+        // Initialize content when the page is loaded
         $(function () {
             localStorage.removeItem(isUpdateInProgressKey);
             localStorage.removeItem(isPasswordGuessedKey);
@@ -160,6 +164,8 @@
             // Display initial state
             pwdField.value = current;
 
+            // While the password is not guessed and we did not exceed the maximum
+            // possible attempts
             while (current !== toGuess
                 && tries < maximumTries) {
                 // Increment the overall tries
@@ -172,6 +178,7 @@
                 pwdField.value = current;
                 triesField.innerHTML = "Nombre d'essais: " + tries;
 
+                // Hold the program to allow the user to witness the changes
                 await sleep(.01);
             }
 
@@ -214,13 +221,21 @@
                     : guess.slice(0, rank) + alphabet[currentIndex + 1]
             }
 
+            // Get the next state of the current brute force state
             const newGuess = incrementGuess(guess, alphabet);
 
+            // Add a new column to the guess if all current ones have been tested
             return [...newGuess].every(char => char === alphabet[0])
                 ? newGuess + alphabet[0]
                 : newGuess
         }
 
+        /**
+         * @summary Generate the alphabet used by the provided value
+         * @param {string} password the password to be guessed
+         * @returns {string[]} the generated alphabet containing the appropriates
+         *                     alphabets
+         */
         function getUsedAlphabet(password) {
             let usedAlphabet = [];
 
@@ -239,14 +254,29 @@
             return usedAlphabet;
         }
 
+        /**
+         * @summary Check if the provided value contains any lower case letter
+         * @returns {boolean} true if at least one char is a lower case letter;
+         *                    false otherwise
+         */
         function isLowerCaseUsed(value) {
             return [...value].some(char => lowerCases.indexOf(char) >= 0);
         }
 
+         /**
+          * @summary Check if the provided value contains any number
+          * @returns {boolean} true if at least one char is a number;
+          *                    false otherwise
+          */
         function isNumberUsed(value) {
             return [...value].some(char => numbers.indexOf(char) >= 0);
         }
 
+        /**
+        * @summary Check if the provided value contains any upper case letter
+        * @returns {boolean} true if at least one char is a upper case letter;
+        *                    false otherwise
+        */
         function isUpperCaseUsed(value) {
             return [...value].some(char => upperCases.indexOf(char) >= 0);
         }
@@ -273,11 +303,16 @@
             guessUserPassword();
         });
 
+        /**
+         * @summary Launch the brute forcing of the user's password
+         */
         async function guessUserPassword() {
+            // If the search is already in progress, skip this operation
             if (localStorage.getItem(isPasswordGuessInProgressKey)) {
                 return;
             }
 
+            // Set a flag to signal that the operation is in progress
             localStorage.setItem(isPasswordGuessInProgressKey, true);
 
             // Disable user inputs
@@ -289,6 +324,7 @@
             userValue = sanitize(userValue, forbiddenChars);
             document.getElementById("user-pwd").value = userValue;
 
+            // Get the alphabet used by the user for its password
             let charPool = getUsedAlphabet(userValue);
 
             // Launch "brute force"
@@ -301,18 +337,29 @@
             // Mark the password as guessed
             localStorage.setItem(isPasswordGuessedKey, true);
 
+            // Remove the flag to allow this operation to be performed once again
             localStorage.removeItem(isPasswordGuessInProgressKey);
         }
 
         // Next resource ---
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
         const hubId = location.href.split("/")[4];
 
+        // Constants for API calls
         const apiUrl = "http://193.50.40.81:5000/api/v1";
         const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
         const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
 
+        // Retrieve the token from the local storage
         const token = JSON.parse(localStorage.currentPupil).token;
 
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
         function loadNextResource() {
             const xmlHttp = new XMLHttpRequest();
             xmlHttp.open("GET", nextResourceUrl, false);
@@ -323,6 +370,9 @@
             document.getElementById("resource-content").innerHTML = resource.content;
         }
 
+        /**
+         * @summary validate the current resource
+         */ 
         function validateResource() {
             const xmlHttp = new XMLHttpRequest();
             xmlHttp.open("PUT", validateResourceUrl, false);
@@ -330,6 +380,7 @@
             xmlHttp.send(null);
         }
 
+        // Event listener for the button to go to the next resource
         $("#btn-next").click(() => {
             if (localStorage.getItem(isUpdateInProgressKey)) {
                 return;

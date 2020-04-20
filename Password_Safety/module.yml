@@ -1,7 +1,7 @@
 module:
   name: Sécurité des mots de passe
   description: >
-    Les mots de passe sont un des mécanismes central de notre sécurité sur internet.
+    Les mots de passe sont un des mécanismes centraux de notre sécurité sur internet.
     Apprenez à créer des mots de passe robustes et à comprendre les enjeux
     d'un mot de passe fort.
   

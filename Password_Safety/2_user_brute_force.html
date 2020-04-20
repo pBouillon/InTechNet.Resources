@@ -16,21 +16,22 @@
 
         <p class="text-justify mt-3">
             On dit généralement d'un bon mot de passe qu'il est <mark>robuste</mark>.
-            Pour comprendre ce que c'est la robustesse, voici un petit jeu où le
-            mot de passe à trouver ne l'est pas du tout.
+            Pour comprendre ce qu'est la robustesse, voici un petit jeu où le
+            mot de passe à trouver n'est pas fort du tout.
         </p>
 
         <p class="text-justify mt-3">
             Le but est simple : trouver le mot de passe de l'ordinateur le plus rapidement possible.
+            Pour t'aider, à chaque essai, tu auras un petit indice pour te dire si le mot de passe est
+            plus grand ou plus petit que ta proposition.
         </p>
         
-        <p class="text-justify mt-3">
-            Quelques indices :
+        <p class="text-justify mt-3 mb-1">
+            Quelques règles :
         </p>
         
         <ul class="list-unstyled">
-            <li class="pl-3 mb-1">✔️ Le mot de passe ne fait que 3 chiffres</li>
-            <li class="pl-3 mb-1">✔️ Le mot de passe n'est composé que de chiffres</li>
+            <li class="pl-3 mb-1">✔️ Le mot de passe n'est composé que de 3 chiffres</li>
             <li class="pl-3 mb-1">✔️ Le mot de passe est compris entre "000" et "999"</li>
         </ul>
 
@@ -67,7 +68,7 @@
                 <small id="pwd-hint" class="form-text text-muted">Saisis un nombre et clique sur "Deviner" !</small>
             </div>
             <div class="d-flex justify-content-end">
-                <button id="btn-pwd-check" class="btn btn-outline-secondary">Deviner</button>
+                <button id="btn-pwd-check" class="btn btn-outline-secondary mt-3">Deviner</button>
             </div>
         </div>
 
@@ -83,13 +84,13 @@
     <div class="col-md-8 mx-auto">
 
         <p class="text-center mt-3">
-            🏆 Bien joué ! Même si le mot de passe est simple, ça ne semble pas si facile à deviner !
+            🏆 Bien joué ! Même si le mot de passe est simple ça n'est pas si facile à deviner !
         </p>
 
         <p class="text-justify mt-3">
-            A la main, ça prend tout de même un peu de temps. Pourtant,
+            A la main, cela nous prend tout de même un peu de temps. En revanche,
             <mark>l'ordinateur permet de faire des calculs bien plus vite</mark> que n'importe
-            quel être humain, alors qu'est ce que ça donne si on automatise ça ?
+            quel être humain, alors qu'est ce que ça donne si on lui donne le même exercice ?
         </p>
 
     </div>
@@ -98,10 +99,11 @@
 <!-- /Conclusion -->
 
 <!-- Module button -->
-<div class="row my-5">
+<div class="row justify-content-md-start justify-content-center my-5">
 
-    <button id="btn-next" class="col-md-3 offset-md-7 btn btn-success">
-        Suivant
+    <button id="btn-next"
+        class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
+        Voyons ça !
     </button>
 
 </div>
@@ -112,6 +114,7 @@
 <!-- Logic -->
 <script>
     $(document).ready(() => {
+
         // LocalStorage keys
         const isUpdateInProgressKey = "isUpdating";
         const secretPasswordKey = "secretPassword";
@@ -121,38 +124,59 @@
         const lowerBound = 0;
         const upperBound = 999;
 
+        // Generate the secret password to be guessed
         const secretPassword = getSecretPassword();
         const zeroFilledPassword = ("000" + secretPassword).slice(-3);
 
+        // Initialize content when the page is loaded
         $(function () {
             localStorage.removeItem(isUpdateInProgressKey);
             setSuccessSectionVisibility();
             $("#pwd-to-guess").val(zeroFilledPassword);
         });
 
+        /**
+         * @summary compare the password provided by the user with the password
+         *          to be guessed
+         */
         function comparePasswords() {
+            // Retrieve the user password as a number
             const userPassword = +document.getElementById("user-pwd").value;
 
+            // Show a hint according to the difference between the user password
+            // and the correct answer
             const hint = getHintFromCompare(userPassword, secretPassword);
             document.getElementById("pwd-hint").innerHTML = hint;
 
+            // Display final message if the user has found the password
             if (userPassword === secretPassword) {
                 localStorage.setItem(secretPasswordFoundKey, true);
             }
         }
 
+        /**
+         * @summary show a hint according to the difference between the user
+         *          password and the correct answer
+         * @param {number} number number to be compared with the other parameter
+         * @param {number} toCompare reference number with whom the other parameter
+         *                           is compared
+         * @returns {string} the appropriate hint
+         */
         function getHintFromCompare(number, toCompare) {
             if (number > toCompare) {
-                return "C'est moins !";
+                return `C'est moins que ${number} !`;
             }
 
             if (number < toCompare) {
-                return "C'est plus !";
+                return `C'est plus que ${number} !`;
             }
 
             return "Bravo !";
         }
 
+        /**
+         * @summary
+         */
         function getSecretPassword() {
             let password = localStorage.getItem(secretPasswordKey);
 
@@ -164,36 +188,55 @@
             return +password;
         }
 
+        /**
+         * @summary set the visibility of the conclusion section according to the
+         *          progress of the user
+         */
         function setSuccessSectionVisibility() {
             if (!localStorage.getItem(secretPasswordFoundKey)) {
-                document.getElementById("conclusion").style.visibility = "hidden";
-                document.getElementById("btn-next").style.visibility = "hidden";
+                document.getElementById("conclusion").style.display = "none";
+                document.getElementById("btn-next").style.display = "none";
                 return;
             }
 
-            document.getElementById("conclusion").style.visibility = "visible";
-            document.getElementById("btn-next").style.visibility = "visible";
+            document.getElementById("conclusion").style.display = "block";
+            document.getElementById("btn-next").style.display = "block";
         }
 
+        // Event listener for the button to check the provided password with
+        // the one to guess
         $("#btn-pwd-check").click(() => {
             comparePasswords();
         });
 
         
         // Next resource ---
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
         const hubId = location.href.split("/")[4];
 
+        // Constants for API calls
         const apiUrl = "http://193.50.40.81:5000/api/v1";
         const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
         const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
 
+        // Retrieve the token from the local storage
         const token = JSON.parse(localStorage.currentPupil).token;
 
+        /**
+         * @summary Clear remaining values in the local storage
+         */
         function clearLocalStorage() {
             localStorage.removeItem(secretPasswordKey);
             localStorage.removeItem(secretPasswordFoundKey);
         }
 
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
         function loadNextResource() {
             const xmlHttp = new XMLHttpRequest();
             xmlHttp.open("GET", nextResourceUrl, false);
@@ -204,6 +247,9 @@
             document.getElementById("resource-content").innerHTML = resource.content;
         }
 
+        /**
+         * @summary validate the current resource
+         */ 
         function validateResource() {
             const xmlHttp = new XMLHttpRequest();
             xmlHttp.open("PUT", validateResourceUrl, false);
@@ -211,6 +257,7 @@
             xmlHttp.send(null);
         }
 
+        // Event listener for the button to go to the next resource
         $("#btn-next").click(() => {
             if (localStorage.getItem(isUpdateInProgressKey)) {
                 return;
