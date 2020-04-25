@@ -1,0 +1,250 @@
+<!-- Resource 2 -->
+
+<!-- Link presentation -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+        Les faux liens
+    </h6>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+            Comme on l'a vu, le phishing commence souvent par un e-mail (mais pas toujours !)
+            et un lien à cliquer.
+        </p>
+
+        <p class="text-justify mt-3">
+            La première étape pour éviter le phishing est simple: il faut lire correctement les liens.
+            Si tu reçois un e-mail de: <br>
+            <span class="text-success">snapchat@support.com</span> ou de 
+            <span class="text-danger">snapchat@support.co</span><br>
+            Il y a une différence !
+        </p>
+
+        <p class="text-justify mt-3">
+            Et pour les liens c'est pire (attention cliquer dessus ouvre un onglet):<br>
+            <p class="mt-1 mb-1 text-primary text-center">
+                <a href="https://www.google.com/"
+                   target="_blank"
+                   rel="noopener noreferrer">Lien vers Snapchat</a><br>
+            </p>
+            Il est très facile de mentir ! Il faut toujours vérifier sur quel site tu es
+            en regardant en haut de ta fenêtre.
+        </p>
+
+    </div>
+
+</div>
+<!-- /Link presentation -->
+
+<!-- Link game -->
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+        <p class="text-justify mt-3">
+            Maintenant à toi de joueur: tu vas voir 4 liens que tu pourrais trouver dans
+            un e-mail de google, snapchat ou n'importe quel site connu,à toi de cliquer
+            sur celui qui est une arnaque 🕵️
+        </p>
+    </div>
+
+    <div id="game1" class="col-md-8 mx-auto">
+        <p class="text-justify mt-3">
+            Niveau 1:
+        </p>
+        <div class="row justify-content-between">
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                google@support.com
+            </button>
+            <button id="scam-link-1" class="col-10 col-md-5 btn btn-light mt-1 mb-1">
+                google@support.co
+            </button>
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                snapchat@support.com
+            </button>
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                fortnite@support.com
+            </button>
+        </div>
+    </div>
+
+    <div id="game2" class="col-md-8 mx-auto">
+        <p class="text-justify mt-3">
+            Niveau 2:
+        </p>
+        <div class="row justify-content-between">
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                google@support.com
+            </button>
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                fortnite@support.com
+            </button>
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                snapchat@support.com
+            </button>
+            <button id="scam-link-2" class="col-10 col-md-5 btn btn-light mt-1 mb-1">
+                fortnιte@support.com
+            </button>
+        </div>
+    </div>
+
+    <div id="game3" class="col-md-8 mx-auto">
+        <p class="text-justify mt-3">
+            Niveau 3:
+        </p>
+        <div class="row justify-content-between">
+            <button id="scam-link-2" class="col-10 col-md-5 btn btn-light mt-1 mb-1">
+                snαpchat@support.com
+            </button>
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                google@support.com
+            </button>
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                fortnite@support.com
+            </button>
+            <button class="col-10 col-md-5 correct-link btn btn-light mt-1 mb-1">
+                snapchat@support.com
+            </button>            
+        </div>
+    </div>
+
+</div>
+<!-- /Link game -->
+
+<!-- Module button -->
+<div id="nextResourceDiv" class="row">
+
+    <div class="col-md-3 mx-auto mt-3">
+
+        <button id="btn-next" class="btn btn-success">La suite ici !</button>
+
+    </div>
+
+</div>
+<!-- /Module button -->
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // LocalStorage keys
+        const isUpdateInProgressKey = "isUpdating";
+        const isLevel1GuessedKey = "isGame1Guessed";
+        const isLevel2GuessedKey = "isGame2Guessed";
+        const isLevel3GuessedKey = "isGame3Guessed";
+
+        // Initialize content when the page is loaded
+        $(function () {
+            localStorage.removeItem(isUpdateInProgressKey);
+            setDivDisplay();
+        });
+
+        function setDivDisplay() {
+            if (localStorage.getItem(isLevel1GuessedKey)) {
+                setGame1();
+                return;
+            }
+
+            $('#game2').hide();
+            $('#game3').hide();
+            $('#nextResourceDiv').hide();
+        }
+
+        function setGame1() {
+            document.getElementById("scam-link-1").classList.remove("btn-light");
+            document.getElementById("scam-link-1").classList.add("btn-success");
+            $('#game2').show();
+            if (localStorage.getItem(isLevel2GuessedKey)) setGame2();
+        }
+
+        function setGame2() {
+            document.getElementById("scam-link-2").classList.remove("btn-light");
+            document.getElementById("scam-link-2").classList.add("btn-success");
+            $('#game3').show();
+            if (localStorage.getItem(isLevel3GuessedKey)) setGame3();
+        }
+
+        function setGame3() {
+            document.getElementById("scam-link-3").classList.remove("btn-light");
+            document.getElementById("scam-link-3").classList.add("btn-success");
+            $('#nextResourceDiv').show();
+        }
+
+        $("#scam-link-1").click(() => {
+            localStorage.setItem(isLevel1GuessedKey, true);
+            setGame1();
+        });
+
+        $("#scam-link-2").click(() => {
+            localStorage.setItem(isLevel2GuessedKey, true);
+            setGame2();
+        });
+
+        $("#scam-link-3").click(() => {
+            localStorage.setItem(isLevel3GuessedKey, true);
+            setGame3();
+        });
+                
+        $(".correct-link").click(() => {
+            $(this).removeClass("btn-light")
+            $(this).attr("disabled", true);
+            $(this).addClass("btn-danger");
+        });
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */ 
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            if (localStorage.getItem(isUpdateInProgressKey)) {
+                return;
+            }
+
+            localStorage.setItem(isUpdateInProgressKey, true);
+            
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->

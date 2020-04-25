@@ -1,0 +1,89 @@
+<!-- Resource 0 -->
+<!-- Title -->
+<h5 class="text-center mb-2">
+    Bienvenue dans ce module sur <span class="text-success">le phishing</span> !
+</h5>
+<!-- /Title -->
+
+<!-- Module goals -->
+<div class="row">
+
+    <div class="col-md-5 mx-auto mt-3">
+
+        <h6 class="mb-3">
+            Dans ce module, nous apprendrons :
+            </h4>
+
+            <ul class="list-unstyled">
+                <li class="pl-3 mb-1">✅ Ce qu'est le phishing et pourquoi certaines personnes l'utilisent</li>
+                <li class="pl-3 mb-1">✅ Comment reconnaître les tentatives de phishing</li>
+                <li class="pl-3 mb-1">✅ Les réflèxes à adopter</li>
+            </ul>
+
+    </div>
+
+</div>
+<!-- /Module goals -->
+
+<!-- Module button -->
+<div class="row">
+
+    <div class="col-md-3 mx-auto mt-3">
+
+        <button id="btn-next" class="btn btn-success">C'est parti !</button>
+
+    </div>
+
+</div>
+<!-- /Module button -->
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */ 
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->

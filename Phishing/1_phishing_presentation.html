@@ -1,0 +1,127 @@
+<!-- Resource 1 -->
+<!-- Title -->
+<h5 class="text-center mb-2">
+    Le <span class="text-success">phishing</span> c'est quoi ?
+</h5>
+<!-- /Title -->
+
+<!-- Explanation -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+       Le phishing: <span class="text-success">la pêche aux données</span> 🎣
+    </h6>
+
+    <div class="row">
+
+        <div class="col-md-8 mx-auto">
+    
+            <p class="text-justify mt-3">
+                Le phishing ou <em>hameçonnage</em> en français est une arnaque courante sur internet
+                dans laquelle beaucoup de gens tombe ! Le but est très simple: te voler l'accès 
+                à un de tes comptes. Cela peut être n'importe quel type de compte: banque, sécurité sociale,
+                impôts pour les adultes, mais également ton compte Snapchat, Fornite, etc. En bref,
+                n'importe lequel de tes comptes peut être viser !
+            </p>
+    
+            <p class="text-justify mt-3">
+                Mais alors comment les gens s'y prennent-ils pour te voler ton compte? 
+                Tu as pourtant choisi un mot de passe très fort, que personne ne peut deviner.
+                Et bien c'est très simple: tu leur donnes sans le vouloir !
+            </p>
+
+            <p class="text-justify mt-3">
+                En effet, le phishing est une arnaque très simple. Tu vas recevoir un e-mail qui te dit:
+                <div class="border"><em><br><p class="text-center mt-2">🚨 <span class="text-danger">Attention !</span> 🚨</p><br>
+                Une activité inattendue a été détecté sur ton compte. Pour s'assurer qu'il s'agit bien de toi,
+                connecte-toi sur le lien suivant:
+                le lien de l'arnaque.com</em></div>
+            </p>
+
+            <p class="text-justify mt-3">
+                Une fois que tu as cliqué sur le lien, le faux site va te demander de te connecter.
+                Si tu rentres ton identifiant et ton mot de passe, félicitations !
+                Tu viens de donner ton compte à quelqu'un de malintentionné 🎁 <br>
+                Il pourra maintenant se connecter sur ton compte et changer ton super mot de passe.
+            </p>
+
+            <blockquote class="blockquote text-center my-5">
+                <p class="mb-0">Je ne donne mon mot de passe à personne, je ne l'écris que pour me connecter 🤓</p>
+                <footer class="blockquote-footer">Quelqu'un qui va perdre son compte un jour</footer>
+            </blockquote>
+
+            <p class="text-justify mt-3">
+                Heureusement, pas d'inquiétudes: repérer les tentatives de phishing est très simple et nous allons
+                voir comment faire !
+            </p>
+            
+        </div>
+    
+    </div>
+
+</div>
+
+<!-- /Explanation-->
+
+<!-- Module button -->
+<div class="row">
+
+    <div class="col-md-3 mx-auto mt-3">
+
+        <button id="btn-next" class="btn btn-success">C'est parti ! 💪</button>
+
+    </div>
+
+</div>
+<!-- /Module button -->
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */ 
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->

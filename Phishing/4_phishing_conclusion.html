@@ -1,0 +1,140 @@
+<!-- Resource 4 -->
+
+<!-- Module conclusion -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+        Pour conclure
+    </h6>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+           On a pu voir que le phishing, même si c'est assez dangereux, ça s'évite
+           assez facilement tant qu'on reste <span class="text-success">vigilants</span>
+        </p>
+
+        <p class="text-justify mt-3">
+            En bref, voici ce que tu devrais essayer de retenir:
+        </p>
+
+        <ul class="list-unstyled mt-3">
+            <li class="pl-3 mb-1">
+                ✔️ Les gens qui vont essayer de te voler tes identifiants vont te mentir,
+                il ne faut pas croire tout ce que tu vois, même dans un e-mail que tu reçois.
+            </li>
+            <li class="pl-3 mb-1">
+                ✔️ Penser à regarder les liens sur lesquels tu cliques, et le lien du site sur
+                lequel tu te trouves, eux ne mentent pas.
+            </li>
+            <li class="pl-3 mb-1">
+                ✔️ 
+            </li>
+        </ul>
+
+        <p class="text-justify mt-3">
+            Et enfin voici des conseils si jamais tu n'es pas sûr qu'un mail soit du phishing:
+            <ul class="list-unstyled mt-3">
+                <li class="pl-3 mb-1">
+                    📌 Si tu reçois un e-mail te demandant de te connecter, cherches le site sur google
+                    et vas sur le site officiel directement, ne cliques pas sur le lien de l'email
+                </li>
+                <li class="pl-3 mb-1">
+                    📌 Si tu penses que tu es malgré tout tombé dans le piège, ne panique pas ! Tu as encore
+                    le temps de changer ton mot de passe (sur le vrai site), il faut cependant être rapide.
+                </li>
+            </ul>
+        </p>
+
+    </div>
+
+</div>
+<!-- /Module conclusion -->
+
+<!-- Module ending -->
+<h5 class="text-center mt-5 mb-2">
+    Voilà qui conclu le module sur le phishing !
+</h5>
+
+<div class="row">
+
+    <div class="col-md-8 mx-auto mt-3">
+
+        <p class="text-justify mt-3">
+            Bravo ! Essaie de garder en tête chacun des points que l'on a pu
+            voir pour surfer en toute sécurité ! 🏄
+        </p>
+
+    </div>
+
+</div>
+<!-- /Module ending -->
+
+<!-- Module button -->
+<div class="row justify-content-md-start justify-content-center my-5">
+
+    <div class="col-md-3 mx-auto mt-3">
+
+        <button id="btn-next" class="btn btn-success">Finir le module</button>
+
+    </div>
+
+</div>
+<!-- /Module button -->
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+        // LocalStorage keys
+        const isUpdateInProgressKey = "isUpdating";
+
+        // Initialize content when the page is loaded
+        $(function () {
+            localStorage.removeItem(isUpdateInProgressKey);
+        });
+        
+        // End resource ---
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const clearResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary Delete the current resource in the database
+         */
+        function clearResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("DELETE", clearResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        /**
+         * @summary Redirect the user when he is done with the module
+         */
+        function redirectToHubPage() {
+            window.location.href = "http://localhost:4201/hubs/" + hubId;
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            clearResource();
+            redirectToHubPage();
+        });
+
+    });
+</script>
+<!-- /Logic -->

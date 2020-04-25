@@ -1,0 +1,139 @@
+<!-- Resource 3 -->
+
+<!-- Interface presentation -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+        Les faux sites webs
+    </h6>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+           Te faire cliquer sur le faux lien n'est que la première étape, le véritable
+           objectif du phishing est de te voler tes identifiants. Mais si le site internet que
+           tu vois une fois que tu as cliqué sur le lien ne ressemble pas à celui que tu connais,
+           l'arnaque ne marchera pas.
+        </p>
+
+        <p class="text-justify mt-3">
+           Le faux site va donc ressembler à celui que tu connais, mais pas complètement et il est
+           très facile de repérer des indices pour t'aider. Les plus voyants sont:
+           <ul>
+               <li>
+                    Le lien sur lequel tu te trouves actuellement, si le site azertliop.com te demande
+                    ton mot de passe snapchat, c'est sûrement une arnaque.
+               </li>
+               <li>
+                    Le cadenas dans la barre en haut de ton navigateur, un site qui n'a pas ce cadenas
+                    n'est pas parfaitement sécurisé et pour des grosses entreprises, ce n'est jamais le cas.
+               </li>
+               <li>
+                    Essayer d'aller sur d'autres pages du site, une personne malintentionnée
+                    n'a pas le temps de refaire tout un site internet, il va souvent se contenter
+                    de la page qui va lui permettre de te voler tes indentifiants.
+               </li>
+           </ul>
+        </p>
+
+    </div>
+
+</div>
+<!-- /Interface presentation -->
+
+<!-- Interface game -->
+<div class="row">
+
+    <p>
+        C'est encore à toi de joueur: 
+    </p>
+
+</div>
+<!-- /Interface game -->
+
+<!-- Module button -->
+<div class="row">
+
+    <div class="col-md-3 mx-auto mt-3">
+
+        <button id="btn-next" class="btn btn-success">Pour conclure</button>
+
+    </div>
+
+</div>
+<!-- /Module button -->
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // LocalStorage keys
+        const isUpdateInProgressKey = "isUpdating";
+        const isLevel1GuessedKey = "isGame1Guessed";
+        const isLevel2GuessedKey = "isGame2Guessed";
+        const isLevel3GuessedKey = "isGame3Guessed";
+
+        // Initialize content when the page is loaded
+        $(function () {
+            localStorage.removeItem(isUpdateInProgressKey);
+            localStorage.removeItem(isLevel1GuessedKey);
+            localStorage.removeItem(isLevel2GuessedKey);
+            localStorage.removeItem(isLevel3GuessedKey);
+        });
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */ 
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            if (localStorage.getItem(isUpdateInProgressKey)) {
+                return;
+            }
+
+            localStorage.setItem(isUpdateInProgressKey, true);
+
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->
