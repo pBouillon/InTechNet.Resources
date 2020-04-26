@@ -1,0 +1,109 @@
+<!-- Title -->
+<h5 class="text-center mb-2">
+    Pour commencer, <span class="text-success">c'est quoi exactement une fake news</span class> ?
+</h5>
+<!-- /Title -->
+
+<!-- Fake news presentation -->
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+            Les fake-news (aussi appelées <em>contre-vérités</em> ou <em>infox</em>) sont <mark>des informations
+            mensongères propagées dans le but de tromper</mark> ceux qui la lisent. Elles font parties de ce qu'on
+            appelle <mark>la désinformation</mark>, un bien grand mot pour dire l'action de faire passer des mensonges
+            pour la vérité auprès d'une ou de plusieurs personnes.
+        </p>
+
+        <p class="text-justify mt-3">
+            En général personne ne fait quelque chose sans but, et les fake news n'échappent par à la règle: elles sont
+            souvent <mark>écrites dans un but précis</mark>. Voici quelques exemples :
+        </p>
+
+        <ul class="list-unstyled mt-3">
+            <li class="pl-3 mb-2">
+                <span class="lead">📣 Faire le buzz</span>, beaucoup de sites utilisent de la publicité: plus il y a
+                de personnes qui le visitent, plus ils gagnent d'argent
+            </li>
+            <li class="pl-3 mb-2">
+                <span class="lead">😰 Faire peur</span>, pour empêcher les gens d'être d'accord avec quelqu'un ou une
+                idée il est plus facile que de leur faire peur que de les convaincre avec des vrais arguments !
+            </li>
+            <li class="pl-3 mb-2">
+                <span class="lead">💰 Vendre quelque chose</span>, si quelqu'un ment sur ce qu'il vend alors il peut
+                très bien donner des arguments de vente incroyable comme l'invisibilité ou la vie éternelle !
+            </li>
+        </ul>
+
+        <p class="text-justify mt-3">
+            Tout ça semble délirant non ? Si c'est aussi facile de voir que c'est un mensonge, alors comment est-ce que
+            ça se fait que personne ne le voit ?
+        </p>
+
+    </div>
+
+</div>
+<!-- /Fake news presentation -->
+
+<!-- Module button -->
+<div class="row justify-content-md-start justify-content-center my-5">
+
+    <button id="btn-next" class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
+        Voyons ça !
+    </button>
+
+</div>
+<!-- /Module button -->
+
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        /* const apiUrl = "http://193.50.40.81:5000/api/v1"; */ const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->
