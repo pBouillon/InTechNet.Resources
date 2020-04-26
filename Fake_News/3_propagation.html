@@ -8,38 +8,146 @@
 <div class="row">
 
     <h6 class="col-md-8 mx-auto mt-3">
-        YOUR SUBTITLE
+        🤔 <span class="text-success">Pourquoi</span> est-ce qu'elles se propagent ?
     </h6>
 
 </div>
 <!-- /Subtitle -->
 
-<!-- Core content -->
+<!-- Why -->
 <div class="row">
 
     <div class="col-md-8 mx-auto">
 
         <p class="text-justify mt-3">
-            YOUR CONTENT
+            Le soucis avec ces informations est qu'<mark>elles ont l'air à la fois importantes et très 
+            intéressantes</mark> voire sensationnelles. Si demain, sur Facebook tu découvres un article expliquant que
+            quelqu'un a découvert comment se téléporter, tu vas probablement être très impressionné et vouloir en parler
+            à tes amis. Tes amis aussi seront sûrement aussi très impressionnés et vont aussi le partager à leurs amis,
+            etc.
         </p>
-
-        <ul class="list-unstyled mt-3">
-            <li class="pl-3 mb-1">
-                YOUR LIST ITEM
-            </li>
-        </ul>
+        
+        <p class="text-justify mt-3">
+            C'est effectivement comme ça que l'on peut propager une information, mais si l'article que tu as lu est
+            totalement faux ? Dans ce cas tu viens malgré toi de participer à la désinformation de tes amis, des amis de
+            tes amis, etc. <mark>Même si ta volonté d'avertir tes amis était positive, le résultat ne l'est pas
+            forcément</mark>.
+        </p>
 
     </div>
 
 </div>
-<!-- /Core content -->
+<!-- /Why -->
+
+<!-- Subtitle -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+        📬 <span class="text-success">Comment</span> est-ce qu'elles se propagent ?
+    </h6>
+
+</div>
+<!-- /Subtitle -->
+
+<!-- How -->
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+            Il y a de nombreuses manières pour les infoxs de se propager. L'une des plus connues est <mark>via les
+            réseaux sociaux.</mark>
+        </p>
+
+        <p class="text-justify mt-3">
+            Beaucoup d'utilisateurs de Twitter, Facebook et autre ont l'habitude de s'informer sur leur fil d'actualité.
+            Cependant, sur ces plateforme, n'importe qui peut partager du contenu et lui donner l'<mark>apparence d'une
+            source d'information sérieuse</mark>.
+        </p>
+
+        <p class="text-justify mt-3">
+            Pire, les réseaux sociaux utilisent des algorithmes pour que le contenu de l'utilisateur soit en fonction
+            de ses centres d'intérêt. Autrement dit, <mark>plus quelqu'un va consulter des articles de fausses
+            informations, plus il est probable qu'il en voit de plus en plus</mark>.
+        </p>
+
+        <p class="text-justify mt-3">
+            Au-delà d'internet, les personnes regardant ces articles en parlent autour d'elles. En en parlant, elles
+            peuvent convaincre d'autres personnes que cette information est vraie. Au final, il y aura beaucoup de gens
+            qui penseront (à tort) l'information comme vraie, ce qui peut suffire à persuader de nouvelles personnes
+            qu'il s'agit de la vérité, un petit peu <mark>comme une rumeur</mark>.
+        </p>
+
+    </div>
+
+</div>
+<!-- /How -->
+
+<!-- Subtitle -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+        Et toi alors, plus fort que les fake news ?
+    </h6>
+
+</div>
+<!-- /Subtitle -->
 
 <!-- Resource validation button -->
 <div class="row justify-content-md-start justify-content-center my-5">
 
     <button id="btn-next" class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
-        TEXT ON NEXT ACTIVITY BUTTON
+        On va voir ça 💪
     </button>
 
 </div>
-<!-- /Resource validation button -->
+<!-- /Resource validation button --><!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        /* const apiUrl = "http://193.50.40.81:5000/api/v1"; */ const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->
