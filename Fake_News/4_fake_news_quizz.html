@@ -83,6 +83,8 @@
 <div class="row">
 
     <div class="col-md-8 mx-auto">
+
+        <small class="text-muted">L'article s'ouvrira dans un nouvel onglet</small>
     
         <p class="text-justify mt-3">
             Tu penses que c'est :
@@ -94,15 +96,15 @@
 
 <div class="row mt-2">
 
-    <div class="col-md-8 mx-auto row">
+    <div class="col-md-8 mx-auto row justify-content-around btn-group-toggle" data-toggle="buttons">
     
-        <div class="col-6 p-1">
-            <button class="col-12 btn btn-outline-success">Vrai ✅</button>
-        </div>
-        
-        <div class="col-6 p-1">
-            <button class="col-12 btn btn-outline-danger">Faux ❌</button>
-        </div>
+        <label id="flat-earth-true-wrapper" class="col-12 col-md-4 mb-2 mb-md-0 btn btn-outline-success">
+            <input id="flat-earth-true" type="radio" name="options" autocomplete="off"> Vrai ✅
+        </label>
+    
+        <label id="flat-earth-false-wrapper" class="col-12 col-md-4 btn btn-outline-danger">
+            <input id="flat-earth-false" type="radio" name="options" autocomplete="off"> Faux ❌
+        </label>
     
     </div>
 
@@ -142,6 +144,8 @@
 
     <div class="col-md-8 mx-auto">
 
+        <small class="text-muted">L'article s'ouvrira dans un nouvel onglet</small>
+
         <p class="text-justify mt-3">
             Tu penses que c'est :
         </p>
@@ -152,27 +156,231 @@
 
 <div class="row mt-2">
 
-    <div class="col-md-8 mx-auto row">
+    <div class="col-md-8 mx-auto row justify-content-around btn-group-toggle" data-toggle="buttons">
 
-        <div class="col-6 p-1">
-            <button class="col-12 btn btn-outline-success">Vrai ✅</button>
-        </div>
+        <label id="dangerous-vaccines-true-wrapper" class="col-12 col-md-4 mb-2 mb-md-0 btn btn-outline-success">
+            <input id="dangerous-vaccines-true" type="radio" name="options" autocomplete="off"> Vrai ✅
+        </label>
 
-        <div class="col-6 p-1">
-            <button class="col-12 btn btn-outline-danger">Faux ❌</button>
-        </div>
+        <label id="dangerous-vaccines-false-wrapper" class="col-12 col-md-4 btn btn-outline-danger">
+            <input id="dangerous-vaccines-false" type="radio" name="options" autocomplete="off"> Faux ❌
+        </label>
 
     </div>
 
 </div>
 <!-- /Game dangerous vaccines -->
 
+<!-- Game conclusion -->
+<div class="row">
+
+    <hr class="col-md-8 mx-auto mt-3" />
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-2">
+            Bravo ! Ces exemples étaient plutôt simples mais dans la vraie vie ça
+            n'est pas toujours aussi évident.
+        </p>
+
+        <p class="text-justify mt-3">
+            Heureusement, savoir si une information est fiable ou non, c'est une
+            question que beaucoup de gens se posent quotidiennement, comme les
+            journalistes par exemple. Et si on allait regarder leurs conseils ?
+        </p>
+
+    </div>
+
+</div>
+<!-- /Game conclusion -->
+
 <!-- Resource validation button -->
 <div class="row justify-content-md-start justify-content-center my-5">
 
     <button id="btn-next" class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
-        TEXT ON NEXT ACTIVITY BUTTON
+        Montre moi !
     </button>
 
 </div>
 <!-- /Resource validation button -->
+
+
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+        // LocalStorage keys
+        const isUpdateInProgressKey = "isUpdating";
+        
+        const flatEarthClicked = "FlatEarth";
+        const dangerousVaccinesClicked = "DangerousVaccines";
+
+        // Initialize content when the page is loaded
+        $(function () {
+            setSuccessSectionsVisibility();
+        });
+
+        // Game logic --
+
+        $("#dangerous-vaccines-false-wrapper").click(() => {
+            flatEarthGame();
+        });
+
+        $("#dangerous-vaccines-true-wrapper").click(() => {
+            flatEarthGame()
+        });
+
+        $("#flat-earth-false-wrapper").click(() => {
+            flatEarthGame();
+        });
+
+        $("#flat-earth-true-wrapper").click(() => {
+            flatEarthGame()
+        });
+
+        function dangerousVaccinesGame() {
+            if (localStorage.getItem(dangerousVaccinesClicked)) {
+                return;
+            }
+
+            // Set answer submitted flag
+            localStorage.setItem(dangerousVaccinesClicked, true);
+
+            // Disable input fields
+            disableDangerousVaccinesGroup();
+
+            // Highlight the submitted answer
+            if (!document.getElementById("dangerous-vaccines-false").checked) {
+                document.getElementById("dangerous-vaccines-false-wrapper").classList
+                    .replace("btn-outline-danger", "btn-danger");
+            } else {
+                document.getElementById("dangerous-vaccines-true-wrapper").classList
+                    .replace("btn-outline-success", "btn-success");
+            }
+        }
+
+        function flatEarthGame() {
+            if (localStorage.getItem(flatEarthClicked)) {
+                return;
+            }
+
+            // Set answer submitted flag
+            localStorage.setItem(flatEarthClicked, true);
+
+            // Disable input fields
+            disableFlatEarthGroup();
+
+            // Highlight the submitted answer
+            if (!document.getElementById("flat-earth-false").checked) {
+                document.getElementById("flat-earth-false-wrapper").classList
+                    .replace("btn-outline-danger", "btn-danger");
+            } else {
+                document.getElementById("flat-earth-true-wrapper").classList
+                    .replace("btn-outline-success", "btn-success");
+            }
+        }
+
+        /**
+         * @summary Disable "dangerous vaccines" related quiz components
+         */
+        function disableDangerousVaccinesGroup() {
+            // Fetch components
+            const dangerousVaccinesFalse = document.getElementById("dangerous-vaccines-false-wrapper");
+            const dangerousVaccinesFalseButton = document.getElementById("dangerous-vaccines-false");
+
+            const dangerousVaccinesTrue = document.getElementById("dangerous-vaccines-true-wrapper");
+            const dangerousVaccinesTrueButton = document.getElementById("dangerous-vaccines-true");
+
+            // Toggle buttons availability
+            dangerousVaccinesFalse.classList.add("disabled");
+            dangerousVaccinesFalseButton.disabled = true;
+
+            dangerousVaccinesTrue.classList.add("disabled");
+            dangerousVaccinesTrueButton.disabled = true;
+        }  
+
+        /**
+         * @summary Disable "flat Earth" related quiz components
+         */
+        function disableFlatEarthGroup() {
+            // Fetch components
+            const flatEarthFalse = document.getElementById("flat-earth-false-wrapper");
+            const flatEarthFalseButton = document.getElementById("flat-earth-false");
+
+            const flatEarthTrue = document.getElementById("flat-earth-true-wrapper");
+            const flatEarthTrueButton = document.getElementById("flat-earth-true");
+
+            // Toggle buttons availability
+            flatEarthFalse.classList.add("disabled");
+            flatEarthFalseButton.disabled = true;
+
+            flatEarthTrue.classList.add("disabled");
+            flatEarthTrueButton.disabled = true;
+        }
+
+        function setSuccessSectionsVisibility() {
+            // Flat Earth visibility
+            if (localStorage.getItem(flatEarthClicked)) {
+                disableFlatEarthGroup();
+            }
+
+            // Vaccines visibility
+            if (localStorage.getItem(dangerousVaccinesClicked)) {
+                disableDangerousVaccinesGroup();
+            }
+        }
+
+        // API calls ---
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        /* const apiUrl = "http://193.50.40.81:5000/api/v1"; */ const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            if (localStorage.getItem(isUpdateInProgressKey)) {
+                return;
+            }
+
+            localStorage.setItem(isUpdateInProgressKey, true);
+
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->
