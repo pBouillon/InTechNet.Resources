@@ -99,13 +99,28 @@
     <div class="col-md-8 mx-auto row justify-content-around btn-group-toggle" data-toggle="buttons">
     
         <label id="flat-earth-true-wrapper" class="col-12 col-md-4 mb-2 mb-md-0 btn btn-outline-success">
-            <input id="flat-earth-true" type="radio" name="options" autocomplete="off"> Vrai ✅
+            <input id="flat-earth-true" type="radio" autocomplete="off"> Vrai ✅
         </label>
     
         <label id="flat-earth-false-wrapper" class="col-12 col-md-4 btn btn-outline-danger">
-            <input id="flat-earth-false" type="radio" name="options" autocomplete="off"> Faux ❌
+            <input id="flat-earth-false" type="radio" autocomplete="off"> Faux ❌
         </label>
     
+    </div>
+
+</div>
+
+<div class="row mt-2">
+
+    <div id="flat-earth-conclusion" class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-2">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
+            impedit quia quisquam, unde excepturi dicta a itaque nemo, eaque
+            tempora maiores corporis deleniti molestiae veniam! Harum laborum
+            quas inventore magni.
+        </p>
+
     </div>
 
 </div>
@@ -159,13 +174,28 @@
     <div class="col-md-8 mx-auto row justify-content-around btn-group-toggle" data-toggle="buttons">
 
         <label id="dangerous-vaccines-true-wrapper" class="col-12 col-md-4 mb-2 mb-md-0 btn btn-outline-success">
-            <input id="dangerous-vaccines-true" type="radio" name="options" autocomplete="off"> Vrai ✅
+            <input id="dangerous-vaccines-true" type="radio" autocomplete="off"> Vrai ✅
         </label>
 
         <label id="dangerous-vaccines-false-wrapper" class="col-12 col-md-4 btn btn-outline-danger">
-            <input id="dangerous-vaccines-false" type="radio" name="options" autocomplete="off"> Faux ❌
+            <input id="dangerous-vaccines-false" type="radio" autocomplete="off"> Faux ❌
         </label>
 
+    </div>
+
+</div>
+
+<div class="row mt-2">
+
+    <div id="dangerous-vaccines-conclusion" class="col-md-8 mx-auto">
+    
+        <p class="text-justify mt-2">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
+            impedit quia quisquam, unde excepturi dicta a itaque nemo, eaque
+            tempora maiores corporis deleniti molestiae veniam! Harum laborum
+            quas inventore magni.
+        </p>
+    
     </div>
 
 </div>
@@ -176,7 +206,7 @@
 
     <hr class="col-md-8 mx-auto mt-3" />
 
-    <div class="col-md-8 mx-auto">
+    <div id="conclusion" class="col-md-8 mx-auto">
 
         <p class="text-justify mt-2">
             Bravo ! Ces exemples étaient plutôt simples mais dans la vraie vie ça
@@ -212,8 +242,8 @@
         // LocalStorage keys
         const isUpdateInProgressKey = "isUpdating";
         
-        const flatEarthClicked = "FlatEarth";
-        const dangerousVaccinesClicked = "DangerousVaccines";
+        const flatEarthChoice = "FlatEarth";
+        const dangerousVaccinesChoice = "DangerousVaccines";
 
         // Initialize content when the page is loaded
         $(function () {
@@ -221,63 +251,52 @@
         });
 
         // Game logic --
-
         $("#dangerous-vaccines-false-wrapper").click(() => {
-            flatEarthGame();
+            dangerousVaccinesGame(false);
         });
 
         $("#dangerous-vaccines-true-wrapper").click(() => {
-            flatEarthGame()
+            dangerousVaccinesGame(true);
         });
 
         $("#flat-earth-false-wrapper").click(() => {
-            flatEarthGame();
+            flatEarthGame(false);
         });
 
         $("#flat-earth-true-wrapper").click(() => {
-            flatEarthGame()
+            flatEarthGame(true);
         });
 
-        function dangerousVaccinesGame() {
-            if (localStorage.getItem(dangerousVaccinesClicked)) {
+        /**
+         * @summary set the user answer for the dangerous vaccines question
+         * @param {bool} areVaccinesDangerous user's opinion on the subject
+         */
+        function dangerousVaccinesGame(areVaccinesDangerous) {
+            if (localStorage.getItem(dangerousVaccinesChoice)) {
                 return;
             }
 
             // Set answer submitted flag
-            localStorage.setItem(dangerousVaccinesClicked, true);
+            localStorage.setItem(dangerousVaccinesChoice, areVaccinesDangerous);
 
             // Disable input fields
             disableDangerousVaccinesGroup();
-
-            // Highlight the submitted answer
-            if (!document.getElementById("dangerous-vaccines-false").checked) {
-                document.getElementById("dangerous-vaccines-false-wrapper").classList
-                    .replace("btn-outline-danger", "btn-danger");
-            } else {
-                document.getElementById("dangerous-vaccines-true-wrapper").classList
-                    .replace("btn-outline-success", "btn-success");
-            }
         }
 
-        function flatEarthGame() {
-            if (localStorage.getItem(flatEarthClicked)) {
+        /**
+         * @summary set the user answer for the flat Earth question
+         * @param {bool} areVaccinesDangerous user's opinion on the subject
+         */
+        function flatEarthGame(isEarthFlat) {
+            if (localStorage.getItem(flatEarthChoice)) {
                 return;
             }
 
             // Set answer submitted flag
-            localStorage.setItem(flatEarthClicked, true);
+            localStorage.setItem(flatEarthChoice, isEarthFlat);
 
             // Disable input fields
             disableFlatEarthGroup();
-
-            // Highlight the submitted answer
-            if (!document.getElementById("flat-earth-false").checked) {
-                document.getElementById("flat-earth-false-wrapper").classList
-                    .replace("btn-outline-danger", "btn-danger");
-            } else {
-                document.getElementById("flat-earth-true-wrapper").classList
-                    .replace("btn-outline-success", "btn-success");
-            }
         }
 
         /**
@@ -297,6 +316,13 @@
 
             dangerousVaccinesTrue.classList.add("disabled");
             dangerousVaccinesTrueButton.disabled = true;
+
+            // Highlight the submitted answer
+            if (localStorage.getItem(dangerousVaccinesChoice) === 'true') {
+                dangerousVaccinesTrue.classList.replace("btn-outline-success", "btn-success");
+            } else {
+                dangerousVaccinesFalse.classList.replace("btn-outline-danger", "btn-danger");
+            }
         }  
 
         /**
@@ -316,18 +342,63 @@
 
             flatEarthTrue.classList.add("disabled");
             flatEarthTrueButton.disabled = true;
+
+            // Highlight the submitted answer
+            if (localStorage.getItem(flatEarthChoice) === 'true') {
+                flatEarthTrue.classList.replace("btn-outline-success", "btn-success");
+            } else {
+                flatEarthFalse.classList.replace("btn-outline-danger", "btn-danger");
+            }
         }
 
+        /**
+         * @summary display or hide each success text and elements according to
+         *          the previously answered quiz questions
+         */
         function setSuccessSectionsVisibility() {
             // Flat Earth visibility
-            if (localStorage.getItem(flatEarthClicked)) {
+            if (localStorage.getItem(flatEarthChoice)) {
                 disableFlatEarthGroup();
             }
 
             // Vaccines visibility
-            if (localStorage.getItem(dangerousVaccinesClicked)) {
+            if (localStorage.getItem(dangerousVaccinesChoice)) {
                 disableDangerousVaccinesGroup();
             }
+
+            showSuccesses();
+        }
+
+        /**
+         * @summary display the final success message to reach the next resource
+         */
+        function showSuccesses() {
+            const isEarthFlat = localStorage.getItem(flatEarthChoice);
+            const areVaccinesDangerous = localStorage.getItem(dangerousVaccinesChoice);
+
+            const DangerousVaccinesConclusionElement = document.getElementById("dangerous-vaccines-conclusion");
+            const flatEarthConclusionElement = document.getElementById("flat-earth-conclusion");
+
+            if (!!areVaccinesDangerous) {
+                DangerousVaccinesConclusionElement.style.display = "block";
+            } else {
+                DangerousVaccinesConclusionElement.style.display = "none";
+            }
+
+            if (!!isEarthFlat) {
+                flatEarthConclusionElement.style.display = "block";
+            } else {
+                flatEarthConclusionElement.style.display = "none";
+            }
+
+            if (!isEarthFlat || !areVaccinesDangerous) {
+                document.getElementById("conclusion").style.display = "none";
+                document.getElementById("btn-next").style.display = "none";
+                return;
+            }
+
+            document.getElementById("conclusion").style.display = "block";
+            document.getElementById("btn-next").style.display = "block";
         }
 
         // API calls ---
