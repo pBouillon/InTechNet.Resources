@@ -1,0 +1,119 @@
+<!-- Title -->
+<h5 class="text-center mb-2">
+    Bien douter d'une information
+</h5>
+<!-- /Title -->
+
+<!-- Core content -->
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+            Pour <mark>bien douter d'une information</mark> il est important de faire attention à
+            certains points pour se faire une meilleure idée de sa fiabilité. Tu peux retrouver tous
+            ces conseils sur
+            <a href="https://www.gouvernement.fr/fake-news-guide-des-questions-a-se-poser-face-a-une-information"
+                target="_blank">le site du gouvernement français</a> :
+        </p>
+
+        <ul class="list-unstyled mt-3">
+            <li class="pl-3 mb-3">
+                <span class="lead">✒️ Qui a écrit cet article ? Pourquoi ?</span> L'auteur est-il un expert ? Un inconnu ?
+                Est ce qu'il voulait <mark>présenter une information ou bien présenter sa propre opinion ?</mark>
+            </li>
+            <li class="pl-3 mb-3">
+                <span class="lead">📖 Comment est présentée l'information ?</span> Si c'est une publication Facebook ça
+                n'est probablement pas aussi sûr qu'un article d'un journal connu !
+            </li>
+            <li class="pl-3 mb-3">
+                <span class="lead">⚜️ Comment est le site ?</span> Ça ne se suffit pas mais <mark>un site en apparence très
+                négligé ou très peu clair est souvent peu crédible</mark>
+            </li>
+            <li class="pl-3 mb-3">
+                <span class="lead">🔭 D'où vient l'information ? De quand ?</span> Il est très important de <mark>s'assurer
+                que l'information est bien réelle et non pas inventée</mark> ! De plus, une information très ancienne n'a
+                probablement pas la même pertinence qu'une information récente sur le sujet.
+            </li>
+        </ul>
+
+        <p class="text-justify mt-3">
+            Dans la pratique, il est important de <mark>toujours douter d'une information avant de l'avoir
+            vérifié</mark>. Sans toujours penser que tout est faux, il ne faut pas penser que tout est vrai non plus.
+            L'une des manières les plus simples de s'assurer de la cohérence d'une information et de voir si plusieurs
+            sources (livres, sites, personnes, etc.) disent bien la même chose à son sujet !
+        </p>
+
+        <hr/>
+
+        <p class="text-justify mt-3">
+            Tu connais maintenant les grandes lignes des fakes news, pense à faire attention sur internet quand tu
+            cherches une information, beaucoup de gens veulent faire passer leurs idées avant la vérité, sois prudent !
+        </p>
+
+    </div>
+
+</div>
+<!-- /Core content -->
+
+<!-- Resource validation button -->
+<div class="row justify-content-md-start justify-content-center my-5">
+
+    <button id="btn-next" class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
+        Finir le module
+    </button>
+
+</div>
+<!-- /Resource validation button -->
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // Clear previous localStorage values on startup
+        $(function () {
+            localStorage.removeItem('DangerousVaccines');
+            localStorage.removeItem('FlatEarth');
+            localStorage.removeItem('isUpdating');
+        });
+
+        /// End resource ---
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        const apiUrl = "http://localhost:8080/api/v1";
+        const clearResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary Delete the current resource in the database
+         */
+        function clearResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("DELETE", clearResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        /**
+         * @summary Redirect the user when he is done with the module
+         */
+        function redirectToHubPage() {
+            window.location.href = "http://193.50.40.81:4201/hubs/" + hubId;
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            clearResource();
+            redirectToHubPage();
+        });
+
+    });
+</script>
+<!-- /Logic -->

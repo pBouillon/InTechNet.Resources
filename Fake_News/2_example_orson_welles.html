@@ -1,0 +1,140 @@
+<!-- Title -->
+<h5 class="text-center mb-2">
+    👩🏻‍🚀 👽 <span class="text-success">La fin du monde</span> 
+</h5>
+<!-- /Title -->
+
+<!-- Introduction -->
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+            Pour te montrer à quel point des fake news peuvent vite se répandre alors qu'elles semblent impossibles à
+            croire voici un petit exemple :
+        </p>
+    </div>
+</div>
+<!-- /Introduction -->
+
+<!-- Subtitle -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+        📻 Une petite émission de radio
+    </h6>
+
+</div>
+<!-- /Subtitle -->
+
+<!-- Core content -->
+<div class="row">
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+            En 1939, un animateur radio du nom d'Orson Welles présentait une émission où chaque semaine il adaptait
+            un livre à l'antenne. Ce jour là, il doit présenter <em>"La Guerre des mondes"</em> de H. G. Wells.
+            qui parle du jour où des extraterrestres attaquent la Terre. Il décide de moderniser un peu l'histoire en
+            faisant comme si l'invasion se passait en direct à la radio. Le problème est que le lendemain les journaux
+            ont publié des articles sur la panique générale dans le pays de tous les auditeurs ayant cru à une véritable
+            invasion alien. 👽
+        </p>
+    </div>
+
+</div>
+<!-- /Core content -->
+
+<!-- Identify the fake news -->
+<div class="row">
+
+    <h6 class="col-md-8 mx-auto mt-3">
+        🕵🏻 Alors, où est l'infox ?
+    </h6>
+
+    <div class="col-md-8 mx-auto">
+
+        <p class="text-justify mt-3">
+            Ici <mark>la véritable fake news n'est pas l'émission en elle-même, mais les articles sur la panique</mark>
+            qui sont apparus le lendemain. A cette époque, la radio était vue comme une menace par la presse, et c'était
+            donc l'occasion parfaite de la remettre en cause.
+        </p>
+
+        <p class="text-justify mt-3">
+            Tu te rappelles quand on parlait de faire peur ? En voici un bon exemple ! Et pourtant cette histoire s'est
+            passée il y a plus de 80 ans !
+        </p>
+
+        <p class="text-justify mt-3">
+            Ça semble assez improbable de croire à quelque chose de pareil et pourtant <mark>si tu penses que ça
+            n'arriverait plus de nos jours tu te trompes</mark> ! C'est d'ailleurs le plus difficile, empêcher la
+            propagation de ces informations. Mais au fait, comment ça se propage une fake news ?
+        </p>
+
+    </div>
+
+</div>
+<!-- /Identify the fake news -->
+
+<!-- Resource validation button -->
+<div class="row justify-content-md-start justify-content-center my-5">
+
+    <button id="btn-next" class="col-md-3 col-10 mr-md-0 offset-md-7 btn btn-success">
+        Allons voir ça !
+    </button>
+
+</div>
+<!-- /Resource validation button -->
+
+
+
+<!-- Logic -->
+<script>
+    $(document).ready(() => {
+
+        // Fetch the ID of the hub from URI
+        // https://<host>/hubs/<id>/...
+        // [https:][][<host>][hubs][<id>][...]
+        const hubId = location.href.split("/")[4];
+
+        // Constants for API calls
+        const apiUrl = "http://localhost:8080/api/v1";
+        const nextResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/Resources/current";
+        const validateResourceUrl = apiUrl + "/Pupils/me/Hubs/" + hubId + "/Modules/current/States/current";
+
+        // Retrieve the token from the local storage
+        const token = JSON.parse(localStorage.currentPupil).token;
+
+        /**
+         * @summary loads the next resource from this one and load it into the
+         *          current page
+         */
+        function loadNextResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", nextResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+
+            const resource = JSON.parse(xmlHttp.responseText);
+            document.getElementById("resource-content").innerHTML = resource.content;
+        }
+
+        /**
+         * @summary validate the current resource
+         */
+        function validateResource() {
+            const xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("PUT", validateResourceUrl, false);
+            xmlHttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlHttp.send(null);
+        }
+
+        // Event listener for the button to go to the next resource
+        $("#btn-next").click(() => {
+            validateResource();
+            loadNextResource();
+        });
+
+    });
+</script>
+<!-- /Logic -->
